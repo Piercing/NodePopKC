@@ -36,11 +36,16 @@ require('./lib/dbNodepop.js');
 
 // requerir script install_db.js
 require('./lib/install_db.js');
+// requerir authenticate
+require('./local_config.js');
+require('./lib/jwtAuth.js');
 
 // requerir los modelos
 require('./models/Anuncio.js');
 require('./models/Usuario.js');
 require('./models/PushToken.js');
+
+
 
 
 app.use('/', routes);
@@ -49,8 +54,10 @@ app.use('/', routes);
 
 app.use('/apiv1/anuncios', anuncios);
 app.use('/apiv1/usuarios', usuarios);
+// Con JSON Web Authenticate
 app.use('/apiv1/pushTokens', pushTokens);
-//app.use('/apiv1', require('./routes/apiv1/authenticate'));
+
+app.use('/apiv1/authenticate', require('./routes/apiv1/authenticate'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -58,6 +65,7 @@ app.use(function (req, res, next) {
     err.status = 404;
     next(err);
 });
+
 
 // error handlers
 
