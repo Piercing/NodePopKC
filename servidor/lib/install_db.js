@@ -61,7 +61,7 @@ function initAnuncios(cb) {
         });
     });
 }
-/*
+
 function initUsuarios(cb) {
     var Usuario = mongoose.model('Usuario');
 

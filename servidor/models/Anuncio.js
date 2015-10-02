@@ -38,23 +38,23 @@ anuncioSchema.statics.list = function (filtros, start, limit, cb) {
 
 /*var fichero = path.join('./', 'anuncios.json');
 
- console.log('Abrir ' + fichero);
+console.log('Abrir ' + fichero);
 
- // Abrir el fichero
- function cargaJson(cb) {
- fs.readFile(fichero, function (err, data) {
- if (err) {
- return cb(err);
- }
- try {
- // parsearlo
- var packageJson = JSON.stringify(data);
- } catch (e) {
- return cb(e);
- }
- return cb(null, Object.get.getOwnPropertyNames(packageJson));
- });
- }*/
+// Abrir el fichero
+function cargaJson(cb) {
+    fs.readFile(fichero, function (err, data) {
+        if (err) {
+            return cb(err);
+        }
+        /!*try {
+            // parsearlo
+            var packageJson = JSON.stringify(data);
+        } catch (e) {
+            return cb(e);
+        }*!/
+        return cb(null, data);
+    });
+}*/
 
 
 // exportar el modelo creado
