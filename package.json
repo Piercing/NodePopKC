@@ -1,0 +1,34 @@
+{
+  "name": "nodepop",
+  "version": "1.0.0",
+  "description": "API que dará servicio a una app de venta de artículos de segunda mano",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Piercing/nodepop.git"
+  },
+  "keywords": [
+    "anuncios",
+    "segunda",
+    "mano",
+    "articulos",
+    "work",
+    "lifestyle",
+    "motor",
+    "mobile",
+    "api",
+    "anuncios"
+  ],
+  "author": "JC Merlos Albarracin (Piercing)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Piercing/nodepop/issues"
+  },
+  "homepage": "https://github.com/Piercing/nodepop#readme",
+  "dependencies": {
+    "async": "^1.4.2"
+  }
+}
