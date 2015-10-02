@@ -13,16 +13,15 @@ let Usuario = require('../../models/Usuario');
 
 // crea un usuario
 // POST /apiv1/usuarios
-router.post('/', function (req, res, next) {
+router.post('/', function (req, res) {
 
-    // req del body
-    //let clavesSHA = sha256.x2('sha256', req.body.clave) ;
-    //let $hash = hash('sha512', $salt.$password);
-    let objeto = {nombre: req.body.nombre, email:req.body.email, clave: req.body.clave};
-    //let usuarioSHA= (nombre, email, clavesSHA);
+    // codificado la clave del usuario que recibo por el body
+    let clavesSHA = sha('sha256', req.body.clave);
+    // req parámetros del nuevo usuario con clave cifrada del body
+    let usuarioCifrado = {nombre: req.body.nombre, email: req.body.email, clave: clavesSHA};
 
     // crear un registro de usuario
-    let usuario = new Usuario(objeto);
+    let usuario = new Usuario(usuarioCifrado);
     // guardo el nuevo usuario
     usuario.save(function (err, creado) {
         if (err) {
