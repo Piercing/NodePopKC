@@ -15,6 +15,8 @@ let usuarioSchema = mongoose.Schema({
     clave: String
 });
 
+// indices
+usuarioSchema.index({'email':1}, {unique: true})
 /*var fichero = path.join('./', 'usuarios.json');
 
 console.log('Abrir ' + fichero);

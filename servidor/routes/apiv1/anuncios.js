@@ -15,8 +15,9 @@ var Anuncio = require('../../models/Anuncio');
 router.get('/', function (req, res) {
 
     // sacar filtros de busqueda de query-string
-    // ej. /apiv1/agentes/?name=Jones
     let filtros = {};
+
+    // controlo los errores
 
     // si me piden filtrar por tag
     if (typeof req.query.tags !== 'undefined') {

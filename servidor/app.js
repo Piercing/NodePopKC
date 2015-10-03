@@ -20,6 +20,7 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.set('mensajesError',require('./datosConfig/mensajesError'));
 
 
 // uncomment after placing your favicon in /public
@@ -31,13 +32,17 @@ app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Comprueba el lenguaje del HEAD
+app.use(require('./lib/idioma')());
+
+
 // requerir dbNodepop antes de cargar las rutas
 require('./lib/dbNodepop.js');
 
 // requerir script install_db.js
 require('./lib/install_db.js');
 // requerir authenticate
-require('./local_config.js');
+require('./datosConfig/local_config.js');
 require('./lib/jwtAuth.js');
 
 // requerir los modelos
@@ -45,8 +50,7 @@ require('./models/Anuncio.js');
 require('./models/Usuario.js');
 require('./models/PushToken.js');
 
-
-
+require('./datosConfig/mensajesError.js');
 
 app.use('/', routes);
 
@@ -56,8 +60,7 @@ app.use('/apiv1/anuncios', anuncios);
 app.use('/apiv1/usuarios', usuarios);
 // Con JSON Web Authenticate
 app.use('/apiv1/pushTokens', pushTokens);
-
-app.use('/apiv1/authenticate', require('./routes/apiv1/authenticate'));
+app.use('/apiv1/usuarios', require('./routes/apiv1/authenticate'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -5,7 +5,9 @@
  */
 
 var jwt = require('jsonwebtoken');
-var configJWT = require('../local_config').jwt;// cojo sólo 'jwt' de local_config.js
+var configJWT = require('../datosConfig/local_config').jwt;
+// requiero mensajes de error
+var msgError = require('../datosConfig/mensajesError');
 
 /**
  * JWT auth middleware for use with Express 4.x.
@@ -33,7 +35,7 @@ module.exports = function () {
             // verifies secret and checks exp
             jwt.verify(token, configJWT.secret, function (err, decoded) {
                 if (err) {
-                    return res.json({ok: false, error: {code: 401, message: 'Failed to authenticate token.'}});
+                    return next({controlError: msgError['errorToken']});
                 } else {
                     // if everything is good, save to request for use in other routes
                     req.decoded = decoded;
@@ -42,10 +44,8 @@ module.exports = function () {
             });
         } else {
             // if there is no token return error
-            return res.status(403).json({
-                ok: false,
-                error: {code: 403, message: 'No token provided.'}
-            });
-        }
-    };
+            return next({controlError: msgError['errorToken01']})
+        };
+    }
 };
+

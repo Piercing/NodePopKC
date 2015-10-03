@@ -10,7 +10,7 @@ let mongoose = require('mongoose');
 let Usuario = mongoose.model('Usuario');
 
 let jwt = require('jsonwebtoken');
-let config = require('../../local_config');
+let config = require('../../datosConfig/local_config');
 
 let sha = require('sha256');
 
@@ -19,8 +19,8 @@ router.post('/authenticate', function (req, res) {
     // busco un sólo usuario
     Usuario.findOne({
         nombre: req.body.nombre,
-        email: req.email,
-        clave: req.clave
+        email: req.body.email,
+        clave: req.body.clave
     }, function (err, usuario) {
 
         if (err) {
@@ -30,16 +30,18 @@ router.post('/authenticate', function (req, res) {
         if (!usuario) {
             return res.json({ok: false, error: {code: 401, message: 'Authentication failed. User not found.'}});
 
-        } else if (usuario) {
+        }
+        else if (usuario) {
             // codificado la clave candidata
             let validatePass = sha('sha256', req.body.clave);
 
             // compruebo clave candidata con la clave de la BBDD
-            if (usuario.clave != validatePass) {
+            if (usuario.clave !== validatePass) {
                 res.json({ok: false, error: {code: 401, message: 'Authentication failed. Wrong password.'}});
 
                 // compruebo el email
-            } else if (usuario.email !== req.body.email) {
+            }
+             if (usuario.email !== req.body.email) {
                 return res.json({ok: false, error: {code: 401, message: 'Authentication failed. Email not found.'}});
             }
             else {
@@ -59,3 +61,5 @@ router.post('/authenticate', function (req, res) {
         }
     });
 });
+
+module.exports = router;
