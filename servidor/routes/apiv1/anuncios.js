@@ -9,13 +9,13 @@ var mongoose = require('mongoose');
 
 // requiero el modelo 'Anuncio'
 var Anuncio = require('../../models/Anuncio');
-
+var Tags = require('../../models/Anuncio');
 
 /* GET users listing. */
 router.get('/', function (req, res) {
 
-    // sacar filtros de busqueda de query-string
-    let filtros = {};
+    // sacar filtros de búsqueda de query-string
+    var filtros = {};
 
     // controlo los errores
 
@@ -45,9 +45,9 @@ router.get('/', function (req, res) {
     }
 
     // poner límites
-    let start = parseInt(req.query.start) || 0;
+    var start = parseInt(req.query.start) || 0;
     // el Api devuelve como máximo 4 registros en cada llamada
-    let limit = parseInt(req.query.limit) || 4;
+    var limit = parseInt(req.query.limit) || 4;
 
     console.log(filtros);
 
@@ -60,5 +60,7 @@ router.get('/', function (req, res) {
         res.json({ok: true, data: lista});
     });
 });
+
+
 
 module.exports = router;

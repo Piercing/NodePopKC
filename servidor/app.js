@@ -33,24 +33,27 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Comprueba el lenguaje del HEAD
-app.use(require('./lib/idioma')());
-
+require('./lib/idioma');
 
 // requerir dbNodepop antes de cargar las rutas
 require('./lib/dbNodepop.js');
 
 // requerir script install_db.js
-require('./lib/install_db.js');
-// requerir authenticate
-require('./datosConfig/local_config.js');
+require('./datosConfig/install_db.js');
+
+// requerir authenticate JWT
 require('./lib/jwtAuth.js');
+
+// requerir apiKey
+require('./datosConfig/local_config.js');
+
 
 // requerir los modelos
 require('./models/Anuncio.js');
 require('./models/Usuario.js');
 require('./models/PushToken.js');
 
-require('./datosConfig/mensajesError.js');
+var msgError = require('./datosConfig/mensajesError.js');
 
 app.use('/', routes);
 
@@ -60,7 +63,9 @@ app.use('/apiv1/anuncios', anuncios);
 app.use('/apiv1/usuarios', usuarios);
 // Con JSON Web Authenticate
 app.use('/apiv1/pushTokens', pushTokens);
+
 app.use('/apiv1/usuarios', require('./routes/apiv1/authenticate'));
+app.use('/apiv1/tags', require('./routes/apiv1/listaTags'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -77,9 +82,7 @@ app.use(function (req, res, next) {
 if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
         res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
+        res.send('error', {controlError: msgError['usuario_05'].en
         });
     });
 }

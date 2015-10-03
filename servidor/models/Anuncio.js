@@ -3,12 +3,12 @@
  */
 "use strict";
 
-let mongoose = require('mongoose');
-let fs = require('fs');
-let path = require('path');
+var mongoose = require('mongoose');
+var fs = require('fs');
+var path = require('path');
 
 // definir esquema de anuncio
-let anuncioSchema = mongoose.Schema({
+var anuncioSchema = mongoose.Schema({
     nombre: String,
     venta: Boolean,
     precio: Number,
@@ -25,7 +25,7 @@ anuncioSchema.statics.list = function (filtros, start, limit, cb) {
 
     // si pongo el callback ('find(filtros, cb)'), cuando termine mongoose de hacer
     // la búsqueda ejecutará el callback y me devolverá los datos de la búsqueda.
-    let query = Anuncio.find(filtros);
+    var query = Anuncio.find(filtros);
     query.sort('precio');
     query.skip(0);
     query.limit(10);
@@ -38,6 +38,16 @@ anuncioSchema.statics.list = function (filtros, start, limit, cb) {
     });
 };
 
+function listaTags(cb) {
+
+    var query = Anuncio.distinct('tags');
+    query.exec(function (err, rows) {
+        if (err) {
+            return cb(err);
+        }
+        return cb(null, rows);
+    });
+}
 /*var fichero = path.join('./', 'anuncios.json');
 
  console.log('Abrir ' + fichero);
@@ -60,6 +70,8 @@ anuncioSchema.statics.list = function (filtros, start, limit, cb) {
 
 
 // exportar el modelo creado
-let Anuncio = mongoose.model('Anuncio', anuncioSchema);
+var Anuncio = mongoose.model('Anuncio', anuncioSchema);
 
 module.exports = Anuncio;
+exports.listaTagsTags = listaTags;
+

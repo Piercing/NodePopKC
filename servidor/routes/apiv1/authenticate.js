@@ -3,16 +3,20 @@
  */
 "use strict";
 
-let express = require('express');
-let router = express.Router();
+var express = require('express');
+var router = express.Router();
 
-let mongoose = require('mongoose');
-let Usuario = mongoose.model('Usuario');
+var mongoose = require('mongoose');
+var Usuario = mongoose.model('Usuario');
 
-let jwt = require('jsonwebtoken');
-let config = require('../../datosConfig/local_config');
+var jwt = require('jsonwebtoken');
+var config = require('../../datosConfig/local_config');
 
-let sha = require('sha256');
+// requiero mensajes de error
+var msgError = require('../../datosConfig/mensajesError');
+
+// requiero módulo sha256
+var sha = require('sha256');
 
 router.post('/authenticate', function (req, res) {
 
@@ -33,7 +37,7 @@ router.post('/authenticate', function (req, res) {
         }
         else if (usuario) {
             // codificado la clave candidata
-            let validatePass = sha('sha256', req.body.clave);
+            var validatePass = sha('sha256', req.body.clave);
 
             // compruebo clave candidata con la clave de la BBDD
             if (usuario.clave !== validatePass) {
