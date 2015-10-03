@@ -45,7 +45,7 @@ router.post('/', function (req, res) {
             // devolver una confirmación
             res.json({ok: true, usuario: cb});
 
-        }else return cb({controlError:msgError['usuario_06']});
+        }else return cb({controlError:msgError['usuario_05']});
 
     });
 });

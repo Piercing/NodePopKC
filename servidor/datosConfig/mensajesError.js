@@ -9,7 +9,7 @@ module.exports =
 
     "usuario_01": {
         es: 'Error al guardar usuario, revise los datos',
-        en: 'Error saving user data check', code: 401
+        en: 'Error saving user, data check', code: 401
     },
     "usuario_02": {es: 'El campo nombre es obligatorio', en: 'field name required', code: 402},
 
@@ -18,10 +18,6 @@ module.exports =
     "usuario_04": {es: 'Clave obligatoria', en: 'Password required', code: 402},
 
     "usuario_05": {
-        es: 'Usuario no identificado faltan los campos email/password',
-        en: 'user not identified missing email/password fields', code: 401
-    },
-    "usuario_06": {
         es: 'Ya existe el usuario con esos datos',
         en: 'User already exists with that data', code: 401
     },
