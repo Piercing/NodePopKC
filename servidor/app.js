@@ -32,6 +32,7 @@ app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 // Comprueba el lenguaje del HEAD
 require('./lib/idioma');
 
@@ -65,7 +66,13 @@ app.use('/apiv1/usuarios', usuarios);
 app.use('/apiv1/pushTokens', pushTokens);
 
 app.use('/apiv1/usuarios', require('./routes/apiv1/authenticate'));
-app.use('/apiv1/tags', require('./routes/apiv1/listaTags'));
+app.use('/apiv1/anuncios/tags', require('./routes/apiv1/anuncios'));
+
+// handlers de error
+
+// Middleware para Manejar errores
+app.use(require('./lib/errores')())
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -82,11 +89,12 @@ app.use(function (req, res, next) {
 if (app.get('env') === 'development') {
     app.use(function (err, req, res, next) {
         res.status(err.status || 500);
-        res.send('error', {controlError: msgError['usuario_05'].en
+        res.render('error', {
+            message: err.message,
+            error: {}
         });
     });
 }
-
 // production error handler
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {

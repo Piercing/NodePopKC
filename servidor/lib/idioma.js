@@ -10,7 +10,7 @@ module.exports = function() {
 
         // Comprobar idioma en el HEAD
         if ((!req.headers.lang) || (req.headers.lang!=='es' && req.headers.lang!=='en') )
-            return next({controlError:mensajeError['idioma']});
+            return res.send({controlError:mensajeError['idioma']});
         next();
     };
 };
