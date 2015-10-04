@@ -18,13 +18,14 @@ var msgError = require('../../datosConfig/mensajesError');
 // requiero módulo sha256
 var sha = require('sha256');
 
-router.post('/authenticate', function (req, res) {
+router.post('/authenticate', function (req, res, next) {
 
     // busco un sólo usuario
     Usuario.findOne({
         nombre: req.body.nombre,
         email: req.body.email,
         clave: req.body.clave
+
     }, function (err, usuario) {
 
         if (err) {
@@ -32,8 +33,7 @@ router.post('/authenticate', function (req, res) {
         }
 
         if (!usuario) {
-            return res.json({ok: false, error: {code: 401, message: 'Authentication failed. User not found.'}});
-
+            return next({controlError: msgError['usuario_07']});
         }
         else if (usuario) {
             // codificado la clave candidata
@@ -41,12 +41,11 @@ router.post('/authenticate', function (req, res) {
 
             // compruebo clave candidata con la clave de la BBDD
             if (usuario.clave !== validatePass) {
-                res.json({ok: false, error: {code: 401, message: 'Authentication failed. Wrong password.'}});
-
-                // compruebo el email
+                return next({controlError: msgError['usuario_08']});
             }
+                // compruebo el email
              if (usuario.email !== req.body.email) {
-                return res.json({ok: false, error: {code: 401, message: 'Authentication failed. Email not found.'}});
+                 return next({controlError: msgError['usuario_09']});
             }
             else {
                 // Si encuetro el usuario y su clave y email son correctos

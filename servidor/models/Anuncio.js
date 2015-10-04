@@ -15,8 +15,8 @@ var anuncioSchema = mongoose.Schema({
     foto: String,
     tags: [String]
 });
-// ínidice
-anuncioSchema.index({'nombre': 1, type: -1});
+// índice
+anuncioSchema.index({'nombre': 1, precio: -1});
 
 // ejecuto la query con todo
 anuncioSchema.statics.list = function (filtros, start, limit, cb) {
@@ -28,7 +28,7 @@ anuncioSchema.statics.list = function (filtros, start, limit, cb) {
     var query = Anuncio.find(filtros);
     query.sort('precio');
     query.skip(0);
-    query.limit(10);
+    query.limit(3);
     query.select('nombre precio venta tags ');
     return query.exec(function (err, rows) {
         if (err) {
@@ -38,16 +38,20 @@ anuncioSchema.statics.list = function (filtros, start, limit, cb) {
     });
 };
 
-function listaTags(cb) {
-
-    var query = Anuncio.distinct('tags');
+exports.listTags = function listaTags(cb) {
+    var query = anuncioSchema.distinct('tags');
     query.exec(function (err, rows) {
         if (err) {
             return cb(err);
         }
         return cb(null, rows);
     });
-}
+};
+
+// exportar el modelo creado
+var Anuncio = mongoose.model('Anuncio', anuncioSchema);
+module.exports = Anuncio;
+
 /*var fichero = path.join('./', 'anuncios.json');
 
  console.log('Abrir ' + fichero);
@@ -69,9 +73,7 @@ function listaTags(cb) {
  }*/
 
 
-// exportar el modelo creado
-var Anuncio = mongoose.model('Anuncio', anuncioSchema);
 
-module.exports = Anuncio;
-exports.listaTagsTags = listaTags;
+
+
 

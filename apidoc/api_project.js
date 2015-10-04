@@ -1,0 +1,1 @@
+define({  "name": "nodepop",  "version": "1.0.0",  "description": "API que dará servicio a una app de venta de artículos de segunda mano",  "sampleUrl": false,  "apidoc": "0.2.0",  "generator": {    "name": "apidoc",    "time": "2015-10-03T18:55:06.518Z",    "url": "http://apidocjs.com",    "version": "0.13.1"  }});

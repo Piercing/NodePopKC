@@ -9,12 +9,11 @@ var mongoose = require('mongoose');
 
 // requiero el modelo 'Anuncio'
 var Anuncio = require('../../models/Anuncio');
-var Tags = require('../../models/Anuncio');
 
 /* GET users listing. */
 router.get('/', function (req, res) {
 
-    // sacar filtros de búsqueda de query-string
+    // sacar filtros de busqueda de query-string
     var filtros = {};
 
     // controlo los errores
@@ -34,9 +33,9 @@ router.get('/', function (req, res) {
         filtros.precio = {'$gte': req.query.precio};
     }
 
-    // si me piden filtrar por precio igual
+    // si me piden filtrar por rango de precio
     if (typeof req.query.precio !== 'undefined') {
-        filtros.precio = {'$lte': req.query.precio};
+        filtros.precio = {'$gte': req.query.precio.min, '$lte': req.query.precio.max};
     }
 
     // si me piden filtrar por nombre
@@ -59,8 +58,15 @@ router.get('/', function (req, res) {
         }
         res.json({ok: true, data: lista});
     });
+
+    router.get('/', function (req, res, next) {
+        Anuncio.listTags(function (err, rows) {
+            if (err) {
+                return next(err)
+            }
+            res.json(rows);
+        });
+    });
 });
-
-
 
 module.exports = router;
