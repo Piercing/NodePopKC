@@ -3,31 +3,34 @@
  */
 "use strict";
 
-var express = require('express');
-var router = express.Router();
+var express = require ( 'express' );
+var router  = express.Router ();
 
+let mongoose = require ( 'mongoose' );
 // requiero el modelo 'pushToken'
-var PushToken = require('../../models/PushToken');
+var PushToken = mongoose.model ( 'PushToken' );
 // requiero mensajes de error
-var msgError = require('../../datosConfig/mensajesError');
+var msgError = require ( '../../lib/errors' );
 
-var usuario   = require('./usuarios');
-
-router.post('/authenticate', function (req, res, next) {
+router.post ( '/', function ( req, res ) {
 
     // crear ruta pushToken
-    console.log(req.body);
+    console.log ( req.body );
 
-    var pushToken = new PushToken(req.body);
+    var nuevo = {
+        token     : req.body.pushtoken,
+        usuario   : req.body.idusuario || undefined,
+        plataforma: req.body.plataforma
+    };
 
-    pushToken.save(function (err, Token) {
-        if (err) {
-            return next({controlError: msgError['errorToken']});
+    PushToken.save ( nuevo, ( err, token )=> {
+        if ( err ) {
+            return errors ( err, req.lang ).json ( res );
         }
-        //devolver confirmación
-        res.json({ok: true, token: Token});
-    });
-});
+        // Devolver confirmación
+        return res.json ( { ok: true, token: token } );
+    } );
+} );
 
 
 module.exports = router;

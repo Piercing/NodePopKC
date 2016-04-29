@@ -67,16 +67,16 @@ anuncioSchema.statics.createRecord = function ( ad, cb ) {
 };
 
 // ejecuto la query con todo
-anuncioSchema.statics.list = function ( filters, start, sort, num, total, cb ) {
+anuncioSchema.statics.list = function ( filters, start, sort, limit, total, cb ) {
 
-    console.log ( 'anuncio.list', filters, start, sort, num, total );
+    console.log ( 'anuncio.list', filters, start, sort, limit, total );
 
     // si pongo el callback ('find(filtros, cb)'), cuando termine mongoose de hacer
     // la búsqueda ejecutará el callback y me devolverá los datos de la búsqueda.
     var query = Anuncio.find ( filters );
     query.sort ( sort );
     query.skip ( start );
-    query.limit ( num );
+    query.limit ( limit );
     //query.select ( 'nombre precio venta tags ' );
 
     return query.exec ( function ( err, rows ) {
@@ -109,10 +109,20 @@ anuncioSchema.statics.list = function ( filters, start, sort, num, total, cb ) {
     } );
 };
 
+/**
+ * Devuelve los anuncios filtrados
+ * @param filter
+ * @param cb
+ * @returns {Query|*}
+ */
 anuncioSchema.statics.getCount = function ( filter, cb ) {
     return Anuncio.count ( filter, cb );
 };
 
+/**
+ * Return Tags
+ * @param cb
+ */
 exports.listTags = function listaTags ( cb ) {
     var query = anuncioSchema.distinct ( 'tags' );
     query.exec ( function ( err, rows ) {

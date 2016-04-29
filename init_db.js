@@ -29,7 +29,9 @@ database.once ( 'open', function () {
     } );
 } );
 
-
+/**
+ *
+ */
 function installScript () {
 
     // Cargamos anuncios y usuarios o devolvemos un error y salimos
@@ -72,6 +74,10 @@ function startAds ( cb ) {
     } );
 }
 
+/**
+ *
+ * @param cb
+ */
 function startUsers ( cb ) {
     var Usuario = mongoose.model ( 'Usuario' );
 
