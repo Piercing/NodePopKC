@@ -6,8 +6,8 @@
     "start" : "node ./bin/www",
     "cluster" : "node ./bin/cluster",
     "debug" : "DEBUG=nodepop:* nodemon ./bin/www",
-    "hints" : "jshint . && ./node_modules/.bin/jscs . || true",
-    "installDB" : "node install_db.js"
+    "hints": "jshint . && ./node_modules/.bin/jscs . || true",
+    "installDB" : "node init_db.js"
   },
   "dependencies" : {
     "async" : "^1.4.2",

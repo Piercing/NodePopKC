@@ -12,6 +12,7 @@ database.once ( 'open', function () {
     console.info ( 'Connected to mongodb.' );
 } );
 
+// Conectar a 'nodepop'
 mongoose.connect ( 'mongodb://localhost/nodepop' );
 
 // Cargamos todos los modelos

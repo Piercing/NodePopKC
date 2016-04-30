@@ -3,15 +3,12 @@
  */
 "use strict";
 
-var express = require ( 'express' );
-var router  = express.Router ();
-
+var express  = require ( 'express' );
+var router   = express.Router ();
 var mongoose = require ( 'mongoose' );
-// requiero el modelo 'Anuncio'
-var Anuncio = mongoose.model ( 'Anuncio' );
+var Anuncio  = mongoose.model ( 'Anuncio' );
+var jwtAuth  = require ( '../../lib/jwtAuth' );
 
-// Auth con JWT
-var jwtAuth = require ( '../../lib/jwtAuth' );
 router.use ( jwtAuth () );
 
 /* GET users listing. */
@@ -25,7 +22,7 @@ router.get ( '/', function ( req, res ) {
     var limit = parseInt ( req.query.limit ) || 1000;
     // Ordenar, o por 'id'
     var sort = req.query.sort || '_id';
-
+    // Incluir el total si es true
     var total = req.query.total === 'true';
 
     // control de errores //
@@ -60,19 +57,17 @@ router.get ( '/', function ( req, res ) {
     Anuncio.list ( filters, start, sort, limit, total, function ( err, list ) {
         if ( err ) {
             //console.log ( err );
+            // Respuesta de error
             return res.status ( 500 ).json ( { ok: false, error: { code: 500, message: err.message } } );
         }
+        // Respuesta Ok
         res.json ( { ok: true, data: list } );
     } );
+} );
 
-    router.get ( '/tags', function ( req, res, next ) {
-        Anuncio.listTags ( function ( err, rows ) {
-            if ( err ) {
-                return next ( err )
-            }
-            res.json ( rows );
-        } );
-    } );
+// Devuelvo la lista de los availableTags disponibles
+router.get ( '/tags', function ( req, res ) {
+    res.json ( { ok: true, availableTags: Anuncio.availableTags () } );
 } );
 
 module.exports = router;

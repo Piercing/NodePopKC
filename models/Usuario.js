@@ -15,9 +15,6 @@ var usuarioSchema = mongoose.Schema ( {
     clave : String
 } );
 
-// indices
-usuarioSchema.index ( { 'email': 1 }, { unique: true } )
-
 /**
  * Return true if user exists
  * @param iduser
@@ -43,9 +40,11 @@ usuarioSchema.statics.exists = function ( iduser, cb ) {
  * @param cb
  * @returns {*}
  */
-usuarioSchema.statics.createRecord = function ( user, cb ) {
-    // Hacemos las validaciones
+usuarioSchema.statics.register = function ( user, cb ) {
+
     var validateErrors = [];
+
+    // Hacemos las validaciones //
 
     // Error en el nombre, máximo dos parametros y comprueba el 'locale' => 'locale = locale || 'en-US';'
     if ( ! (validator.isAlpha ( user.nombre ) && validator.isLength ( user.nombre, 2 )) ) {
@@ -68,42 +67,26 @@ usuarioSchema.statics.createRecord = function ( user, cb ) {
     }
 
     // Buscamos usuarios por el email y comprobamos si hay duplicidades
-    Usuario.findOne ( { email: user.email }, function ( err, user ) {
+    Usuario.findOne ( { email: user.email }, function ( err, shearchUsers ) {
         // Si hay error lo devolvemos
         if ( err ) {
             return cb ( err );
         }
         // Si el usuario existe devolvemos => code: 409 => 'email usuario duplicado'
-        if ( user ) {
+        if ( shearchUsers ) {
             return cb ( { code: 409, message: 'user_email_duplicated' } );
+
             // Si no hay error y el usuario no existe:
         } else {
             // Codifico la clave mediante 'hash'
             user.clave = hash.sha256 ().update ( user.clave ).digest ( 'hex' );
 
-            // Por último almaceno el usuario
+            // Por último almaceno el nuevo usuario
             new Usuario ( user ).save ( cb );
         }
     } );
 };
 
-/**
- * Return usuario
- * @param criterios
- * @param cb
- */
-function getUsuario ( criterios, cb ) {
-
-    usuarioSchema.findOne ( criterios, function ( err, data ) {
-        if ( err ) {
-            return cb ( err );
-        }
-        return cb ( null, data );
-    } );
-};
-
 // exportar el modelo creado
-var Usuario = mongoose.model ( 'Usuario', usuarioSchema );
-
-module.exports     = Usuario;
-exports.getUsuario = getUsuario;
+var Usuario    = mongoose.model ( 'Usuario', usuarioSchema );
+module.exports = Usuario;

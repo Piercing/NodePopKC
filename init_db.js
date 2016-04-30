@@ -4,8 +4,10 @@ var database = require ( './models/database' );
 var mongoose = require ( 'mongoose' );
 var readLine = require ( 'readline' );
 var async    = require ( 'async' );
+var Usuario  = mongoose.model ( 'Usuario' );
+var Anuncio  = mongoose.model ( 'Anuncio' );
 
-// Colgamos evento abrir la 'database'
+// Colgamos evento abrir 'database'
 database.once ( 'open', function () {
 
     // Creo interfaz de entrada salida de datos
@@ -14,7 +16,7 @@ database.once ( 'open', function () {
         output: process.stdout
     } );
 
-    rLine.question ( 'Are you sure to clear the BD?', function ( response ) {
+    rLine.question ( 'Are you sure to clear the BD, (yes or no)?', function ( response ) {
         // Cerramos interfaz
         rLine.close ();
         if ( response.toLowerCase () === 'yes' ) {
@@ -50,8 +52,6 @@ function installScript () {
  * @param cb
  */
 function startAds ( cb ) {
-    // Obtengo el modelo de anuncios
-    var Anuncio = mongoose.model ( 'Anuncio' );
 
     // Borro los anuncios
     Anuncio.remove ( {}, ()=> {
@@ -59,17 +59,17 @@ function startAds ( cb ) {
 
         // Cargo anuncios.json
         var file = './anuncios.json';
-        console.log ( 'Loading ' + file + '...' );
+        console.log ( 'Loading ' + file + ' ...' );
 
-        // Cargo el HSON de los anuncios
-        Anuncio.loadJSON ( file, ( err, numLoaded )=> {
+        // Cargo el JSON de los anuncios
+        Anuncio.loadJSON ( file, ( err, numAdsLoaded )=> {
             // Si hay error lo devuelvo
             if ( err ) {
                 return cb ( err );
             }
             // Devuelvo la cantidad de anuncios cargados sin error
-            console.log ( `Loaded ${numLoaded} ads.` );
-            return cb ( null, numLoaded );
+            console.log ( `Loaded ${numAdsLoaded} ads.` );
+            return cb ( null, numAdsLoaded );
         } );
     } );
 }
@@ -79,21 +79,22 @@ function startAds ( cb ) {
  * @param cb
  */
 function startUsers ( cb ) {
-    var Usuario = mongoose.model ( 'Usuario' );
 
+    // Borro usuarios
     Usuario.remove ( {}, ()=> {
-        var usuarios = [
-            { nombre: 'admin', email: 'merlosalbarracin@gmail.com', clave: '123456' },
-            { nombre: 'carlos', email: 'carlos@hotmail.es', clave: '123456' }
+        // Creo un par de users nuevos
+        var users = [
+            { nombre: 'admin', email: 'merlosalbarracin@gmail.com', clave: '1234567' },
+            { nombre: 'carlos', email: 'carlos@hotmail.es', clave: '7654321' }
         ];
 
-        // Itero por el array de Usuarios
-        async.eachSeries ( usuarios, Usuario.createRecord, ( err )=> {
+        // Itero por el array de Usuarios almacenándolos
+        async.eachSeries ( users, Usuario.register, ( err )=> {
             if ( err ) {
                 return cb ( err );
             }
-            console.log ( `Loaded ${usuarios.length} users.` );
-            return cb ( null, usuarios.length );
+            console.log ( `Loaded ${users.length} users.` );
+            return cb ( null, users.length );
         } );
     } );
 }

@@ -7,9 +7,11 @@ var express  = require ( 'express' );
 var router   = express.Router ();
 var mongoose = require ( 'mongoose' );
 var Usuario  = mongoose.model ( 'Usuario' );
+var errors   = require ( '../../lib/errors' );
+var lang = require('../../lib/lang');
 
-// Crear usuario
-// POST /apiv1/usuarios
+// Registar usuario
+// POST /apiv1/usuarios/register
 router.post ( '/register', function ( req, res ) {
 
     var newUser = {
@@ -18,7 +20,7 @@ router.post ( '/register', function ( req, res ) {
         clave : req.body.clave
     };
 
-    Usuario.createRecord ( newUser, function ( err ) {
+    Usuario.register ( newUser, function ( err ) {
         if ( err ) {
             return errors ( err, req.lang ).json ( res );
         }

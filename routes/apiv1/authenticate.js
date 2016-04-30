@@ -10,28 +10,31 @@ var Usuario  = mongoose.model ( 'Usuario' );
 var jwt      = require ( 'jsonwebtoken' );
 var config   = require ( '../../config' );
 var hash     = require ( 'hash.js' );
+var errors   = require ( '../../lib/errors' );
 
-router.post ( '/authenticate', function ( req, res ) {
+// Autenticar credenciales usuario
+// POST /apiv1/authenticate
+router.post ( '/', function ( req, res ) {
 
     var validatePass = req.body.clave;
     var email        = req.body.email;
 
-    // Busco un sólo usuario por e-mail
+    // Busco un usuario por su e-mail
     Usuario.findOne ( { email: email }, function ( err, user ) {
         // Si hay error, devolver error
         if ( err ) {
             return errors ( err, req.lang ).json ( res );
         }
-        // Si el usuario no se encuntra, error => 401
+        // Si el usuario no se encuntra, res: error => 401, no encontrado
         if ( ! user ) {
             return errors ( { code: 401, message: 'users_user_not_found' }, req.lang ).json ( res );
         }
         // Si se encuentra el usuario:
         else if ( user ) {
-            // codificado la clave candidata y comparar los hashes
+            // codificar la clave candidata y comparar los hashes
             validatePass = hash.sha256 ().update ( validatePass ).digest ( 'hex' );
 
-            // compruebo clave candidata con la clave de la BBDD del usuario encontrado
+            // compruebo clave candidata con clave de la BBDD del usuario encontrado
             if ( user.clave !== validatePass ) {
                 return errors ( { code: 401, message: 'users_wrong_password' }, req.lang ).json ( res );
             }
@@ -45,7 +48,7 @@ router.post ( '/authenticate', function ( req, res ) {
                     expiresInMinutes: config.jwt.expiresInMinutes
                 } );
 
-                // devuelvo la información incluida en el token en JSON
+                // Devuelvo la información del token en formato JSON
                 return res.json ( {
                     ok     : true,
                     message: 'Enjoy your token!',

@@ -5,10 +5,9 @@
 "use strict";
 
 var mongoose = require ( 'mongoose' );
-var user     = require ( 'Usuario' );
+var Usuario  = mongoose.model ( 'Usuario' );
 
-// definir esquema de pushToken
-
+// definir esquema de PushToken
 var pushTokenSchema = mongoose.Schema ( {
     plataforma: { type: String, enum: [ 'ios', 'android' ], index: true },
     token     : { type: String, index: true },
@@ -16,8 +15,6 @@ var pushTokenSchema = mongoose.Schema ( {
     createDate: Date
 } );
 
-// indice
-pushTokenSchema.index ( { 'token': 1 }, { unique: true } )
 
 /**
  *
@@ -25,7 +22,7 @@ pushTokenSchema.index ( { 'token': 1 }, { unique: true } )
  * @param cb
  * @returns {*}
  */
-pushTokenSchema.statics.createRecord = function ( user, cb ) {
+pushTokenSchema.statics.register = function ( user, cb ) {
 
     // Hacemos las validaciones
     var validateErrors = [];
@@ -49,10 +46,11 @@ pushTokenSchema.statics.createRecord = function ( user, cb ) {
         return cb ( { code: 422, errors: validateErrors } );
     }
 
-    // Si no tengo usuario lo creo el Token directamente
+    // Si no tengo usuario le creo el Token directamente
     if ( ! user.usuario ) {
-        return crear ();
+        return create ();
     }
+
     // Compruebo si existe el usuario
     Usuario.exists ( user.usuario, function ( err, exists ) {
         if ( err ) {
@@ -62,12 +60,12 @@ pushTokenSchema.statics.createRecord = function ( user, cb ) {
         if ( ! exists ) {
             return cb ( { code: 404, message: 'users_user_not_found' } );
         }
-        // Creo el 'Token'
-        return crear ();
+        // Creo el 'Token' si existe
+        return create ();
     } );
 
-    // Función crear => almacena nueva fecha y Token
-    function crear () {
+    // Función create => almacena nueva fecha y Token
+    function create () {
         user.createDate = new Date ();
         new PushToken ( user ).save ( cb );
     }
@@ -75,6 +73,6 @@ pushTokenSchema.statics.createRecord = function ( user, cb ) {
 
 
 // exportar el modelo creado
-var pushToken = mongoose.model ( 'pushToken', pushTokenSchema );
+var PushToken = mongoose.model ( 'PushToken', pushTokenSchema );
 
-module.exports = pushToken;
+module.exports = PushToken;

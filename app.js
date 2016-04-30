@@ -10,7 +10,7 @@ var routes = require ( './routes/index' );
 var users  = require ( './routes/users' );
 
 /* jshint ignore:start */
-var db = require ( './models/db' );
+var db = require ( './models/database' );
 /* jshint ignore:end */
 
 var app = express ();

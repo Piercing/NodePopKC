@@ -14,7 +14,7 @@ router.get ( '/', function ( req, res, next ) {
             console.log ( err );
             return next ( new Error ( 'Could not access the file README.md' ) );
         }
-        // Sino, renderizo en el index el título y los datos
+        // Sino, renderizo/muestro en el index título y datos
         res.render ( 'index', { title: 'NodePop', readme: data } );
     } );
 } );
