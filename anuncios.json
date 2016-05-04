@@ -24,7 +24,7 @@
       "nombre" : "IOS development",
       "venta" : false,
       "precio" : 2500,
-      "foto" : "work.png",
+      "foto" : "work.jpg",
       "tags" : [
         "lifestyle",
         "mobile",
@@ -35,7 +35,7 @@
       "nombre" : "Automovil",
       "venta" : true,
       "precio" : 12300,
-      "foto" : "cochecoche.jpg",
+      "foto" : "coche.jpg",
       "tags" : [
         "lifestyle",
         "motor"

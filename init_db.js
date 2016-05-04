@@ -6,6 +6,7 @@ var readLine = require ( 'readline' );
 var async    = require ( 'async' );
 var Usuario  = mongoose.model ( 'Usuario' );
 var Anuncio  = mongoose.model ( 'Anuncio' );
+var path     = require ( 'path' );
 
 // Colgamos evento abrir 'database'
 database.once ( 'open', function () {
@@ -36,7 +37,7 @@ database.once ( 'open', function () {
  */
 function installScript () {
 
-    // Cargamos anuncios y usuarios o devolvemos un error y salimos
+    // Cargamos anuncios y usuarios o devolvemos un error y salimos en 2º plano
     async.series ( [ startAds, startUsers ], ( err ) => {
             if ( err ) {
                 console.error ( 'There has been an error: ', err );
@@ -58,7 +59,9 @@ function startAds ( cb ) {
         console.log ( 'Delete ads.' );
 
         // Cargo anuncios.json
-        var file = './anuncios.json';
+        var file = ( path.join ( __dirname, 'anuncios.json' ) );
+
+        //'./anuncios.json';
         console.log ( 'Loading ' + file + ' ...' );
 
         // Cargo el JSON de los anuncios
@@ -67,7 +70,7 @@ function startAds ( cb ) {
             if ( err ) {
                 return cb ( err );
             }
-            // Devuelvo la cantidad de anuncios cargados sin error
+            // Devuelvo la cantidad de anuncios cargados
             console.log ( `Loaded ${numAdsLoaded} ads.` );
             return cb ( null, numAdsLoaded );
         } );
@@ -88,7 +91,7 @@ function startUsers ( cb ) {
             { nombre: 'carlos', email: 'carlos@hotmail.es', clave: '7654321' }
         ];
 
-        // Itero por el array de Usuarios almacenándolos
+        // Itero por el array de Usuarios almacenándolos en modo asíncrono
         async.eachSeries ( users, Usuario.register, ( err )=> {
             if ( err ) {
                 return cb ( err );

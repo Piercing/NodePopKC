@@ -41,33 +41,38 @@ anuncioSchema.statics.loadJSON = function ( file, cb ) {
         }
         // Leyendo datos
         console.log ( file + ' load' );
+        // Datos leídos
         console.log ( 'Loaded ads: \n' + data );
 
-        if ( data ) {
-            // Parseo los datos del JSON a objetos
-            var ads    = JSON.parse ( data ).ads;
-            var numAds = ads.length;
+        try {
+            if ( data ) {
+                // Parseo los datos del JSON a objetos
+                var ads = JSON.parse ( data );
+                console.log ( ads );
+                var numAds = ads.length;
 
-            // LLamo  a la  función, itero  sacando todos
-            // los elementos del array 'ads' y los guardo
-            helper.iterateArrays ( ads, Anuncio.register, ( err )=> {
-                // Devuelvo el error si lo hubo
-                if ( err ) {
-                    return cb ( err );
-                }
-                // Si no hubo error, devuelvo el
-                // número de elementos del array
-                return cb ( null, numAds );
-            } );
-            // Si no hay datos, genero un nuevo error avisando de que está vació el fichero
-        } else {
-            return cb ( new Error ( file + 'It is empty' ) );
+                // LLamo  a la  función, itero  sacando todos
+                // los elementos del array 'ads' y los guardo
+                helper.iterateArrays ( ads, Anuncio.register, ( err )=> {
+                    // Devuelvo el error si lo hubo
+                    if ( err ) {
+                        return cb ( err );
+                    }
+                    // Si no hubo error, devuelvo el
+                    // número de elementos del array
+                    return cb ( null, numAds );
+                } );
+                // Si no hay datos, genero un nuevo error avisando de que está vació el fichero
+            }
+        } catch ( err ) {
+            return cb ( err );
         }
+
     } );
 };
 
 
-// Almacena anuncio nuevo
+// Registrar anuncio nuevo
 anuncioSchema.statics.register = function ( ad, cb ) {
     new Anuncio ( ad ).save ( cb );
 };
@@ -86,14 +91,14 @@ anuncioSchema.statics.list = function ( filters, start, sort, limit, total, cb )
 
     console.log ( 'anuncio.list', filters, start, sort, limit, total );
 
-    // si pongo el cb,  cuando termine mongoose de hacer la búsqueda
+    // Si pongo el cb,  cuando termine mongoose de hacer la búsqueda
     // ejecutará el callback y me devolverá los datos de la búsqueda.
     var query = Anuncio.find ( filters );
     query.sort ( sort );
     query.skip ( start );
     query.limit ( limit );
-    //query.select ( 'nombre precio venta availableTags ' );
 
+    // Ejecuto y devuelvo la consulta o el error
     return query.exec ( function ( err, rows ) {
         if ( err ) {
             return cb ( err );
@@ -107,16 +112,15 @@ anuncioSchema.statics.list = function ( filters, start, sort, limit, total, cb )
             }
         } );
 
-        // Resultado con las filas
+        // Objeto resultado con las filas
         var result = { rows: rows };
 
         // Si es distinto del total, devuelvo las filas obtenidas sin error
         if ( ! total ) {
             return cb ( null, result );
         }
-        // Cuento  los  'anuncios'  y  si  no  hay
-        // error devuelvo el total de anuncios sin
-        // filtrar, devolviendo o error o el total
+        // Cuento los 'anuncios' y si  no  hay error
+        // devuelvo el total de anuncios sin filtrar
         Anuncio.getCount ( {}, function ( err, total ) {
             if ( err ) {
                 return cb ( err );
